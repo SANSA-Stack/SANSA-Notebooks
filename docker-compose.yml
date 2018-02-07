@@ -24,7 +24,7 @@ services:
         constraints:
           - node.hostname == akswnc4.aksw.uni-leipzig.de
       labels:
-        traefik.frontend.rule: "namenode.sansa.aksw.org"
+        traefik.frontend.rule: "Host:namenode.sansa.aksw.org"
         traefik.docker.network: "sansa"
         traefik.port: "50070"
         traefik.backend: "namenode"
