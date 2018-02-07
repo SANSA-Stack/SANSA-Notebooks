@@ -27,8 +27,8 @@ services:
         traefik.frontend.rule: namenode.sansa.aksw.org
         traefik.docker.network: sansa
         traefik.port: 50070
-    ports:
-      - 50070:50070
+#    ports:
+#      - 50070:50070
 
   datanode:
     image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
@@ -62,8 +62,8 @@ services:
         traefik.docker.network: sansa
         traefik.port: 8080
         traefik.frontend.rule: spark.sansa.aksw.org
-    ports:
-      - 8080:8080
+#    ports:
+#      - 8080:8080
 
   spark-worker:
     image: bde2020/spark-worker:2.1.0-hadoop2.8-hive-java8
@@ -76,8 +76,8 @@ services:
       replicas: 3
       restart_policy:
         condition: on-failure
-    ports:
-      - 8081:8081
+#    ports:
+#      - 8081:8081
 
   hue:
     image: bde2020/hdfs-filebrowser:3.11
@@ -125,8 +125,8 @@ services:
          traefik.docker.network: sansa
          traefik.port: 8080
          traefik.frontend.rule: notebooks.sansa.aksw.org
-    ports:
-      - 80:8080
+#    ports:
+#      - 80:8080
 
 networks:
   default:
