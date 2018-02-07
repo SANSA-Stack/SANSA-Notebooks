@@ -25,7 +25,7 @@ services:
           - node.hostname == akswnc4.aksw.uni-leipzig.de
       labels:
         traefik.frontend.rule: namenode.sansa.aksw.org
-        traefik.docker.network: spark-net
+        traefik.docker.network: sansa
         traefik.port: 50070
     ports:
       - 50070:50070
@@ -60,7 +60,7 @@ services:
         constraints:
           - node.hostname == akswnc4.aksw.uni-leipzig.de
       labels:
-        traefik.docker.network: spark-net
+        traefik.docker.network: sansa
         traefik.port: 8080
         traefik.frontend.rule: spark.sansa.aksw.org
     ports:
@@ -95,7 +95,7 @@ services:
         constraints:
           - node.hostname == akswnc4.aksw.uni-leipzig.de
       labels:
-        traefik.docker.network: spark-net
+        traefik.docker.network: sansa
         traefik.port: 8088
         traefik.frontend.rule: hdfs.sansa.aksw.org
 
@@ -123,7 +123,7 @@ services:
          constraints:
            - node.hostname == akswnc4.aksw.uni-leipzig.de
        labels:
-         traefik.docker.network: spark-net
+         traefik.docker.network: sansa
          traefik.port: 8080
          traefik.frontend.rule: notebooks.sansa.aksw.org
     ports:
@@ -132,4 +132,4 @@ services:
 networks:
   default:
     external:
-      name: spark-net
+      name: sansa 
