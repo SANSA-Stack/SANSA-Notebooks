@@ -65,6 +65,14 @@ make cli-clustering
 make cli-rule-mining
 ```
 
+# Demo Cluster Deployment
+* [Traefik Web UI](http://traefik-cluster.aksw.org/dashboard/#/)
+* [Spark Master](http://spark.sansa.aksw.org/)
+* [Namenode](http://namenode.sansa.aksw.org/dfshealth.html#tab-overview)
+* [Zeppelin Notebooks](http://notebooks.sansa.aksw.org/#/)
+
+The Web UI are protected with login/pass authentication.
+
 # Notes
 * The instructions from this repo were tested on Ubuntu 16.04 with Docker engine 17.03.
 * Maintained by [Ivan Ermilov](https://github.com/earthquakesan/)
