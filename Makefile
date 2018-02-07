@@ -6,6 +6,12 @@ load-data:
 	docker run -it --rm -v $(shell pwd)/examples/data:/data --net spark-net -e "CORE_CONF_fs_defaultFS=hdfs://namenode:8020" bde2020/hadoop-namenode:1.1.0-hadoop2.8-java8 hdfs dfs -copyFromLocal /data /data
 	docker exec -it namenode hdfs dfs -ls /data
 
+deploy:
+	docker stack deploy -c docker-compose.yml sansa 
+
+traefik:
+	docker service create --name traefik --constraint node.hostname==akswnc4.aksw.uni-leipzig.de --publish 80:80 --publish 8080:8080 --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock --network sansa traefik --docker --docker.swarmmode --docker.domain=sansa.aksw.org --docker.watch --web --logLevel=DEBUG
+
 up:
 	docker network create spark-net
 	docker-compose up -d
