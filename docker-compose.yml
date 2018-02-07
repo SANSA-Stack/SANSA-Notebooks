@@ -32,7 +32,6 @@ services:
 
   datanode:
     image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
-    container_name: datanode
     volumes:
       - type: bind
         source: ./data/datanode
