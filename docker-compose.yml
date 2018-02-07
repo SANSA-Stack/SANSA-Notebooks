@@ -129,6 +129,7 @@ services:
          traefik.backend: "zeppelin-notebooks"
          traefik.default.protocol: "http"
          traefik.enable: "true"
+         traefik.wss.protocol: "http"
 
 volumes:
   namenode:
