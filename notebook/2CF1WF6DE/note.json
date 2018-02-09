@@ -1,18 +1,29 @@
 {
   "paragraphs": [
     {
-      "text": "import java.io.File\nimport java.net.URI\n\nimport net.sansa_stack.inference.rules.{RDFSLevel, ReasoningProfile}\nimport net.sansa_stack.inference.rules.ReasoningProfile._\nimport net.sansa_stack.inference.spark.data.loader.RDFGraphLoader\nimport net.sansa_stack.inference.spark.data.writer.RDFGraphWriter\nimport net.sansa_stack.inference.spark.forwardchaining.{ ForwardRuleReasonerOWLHorst, ForwardRuleReasonerRDFS, ForwardRuleReasonerRDFSDataset, TransitiveReasoner }\nimport org.apache.spark.sql.SparkSession\nimport org.apache.hadoop.fs.FileSystem\nimport org.apache.hadoop.conf.Configuration\n\n// load triples from disk\nval input \u003d \"hdfs://namenode:8020/data/rdf.nt\"\nval output \u003d \"hdfs://namenode:8020/data/output/\"\nval argprofile \u003d \"rdfs\"\n\n// check if output exists and remove if necessary\nval conf \u003d new Configuration()\nval fs \u003d FileSystem.get(new URI(\"hdfs://namenode:8020\"), conf)\nval resultsPath \u003d new org.apache.hadoop.fs.Path(\"/data/output\")\nfs.exists(resultsPath)\nif(fs.exists(resultsPath))\n  fs.delete(resultsPath, true)\n\n\nval profile \u003d argprofile match {\n      case \"rdfs\"        \u003d\u003e ReasoningProfile.RDFS\n      case \"rdfs-simple\" \u003d\u003e ReasoningProfile.RDFS_SIMPLE\n      case \"owl-horst\"   \u003d\u003e ReasoningProfile.OWL_HORST\n      case \"transitive\"  \u003d\u003e ReasoningProfile.TRANSITIVE\n\n}\n\n// the degree of parallelism\nval parallelism \u003d 4\n\n// load triples from disk\nval graph \u003d RDFGraphLoader.loadFromDisk(spark, URI.create(input), parallelism)\nprintln(s\"|G|\u003d${graph.size()}\")\n\n// create reasoner\nval reasoner \u003d profile match {\n   case TRANSITIVE \u003d\u003e new TransitiveReasoner(spark.sparkContext, parallelism)\n   case RDFS       \u003d\u003e new ForwardRuleReasonerRDFS(spark.sparkContext, parallelism)\n   case RDFS_SIMPLE \u003d\u003e\n   var r \u003d new ForwardRuleReasonerRDFS(spark.sparkContext, parallelism) //.level.+(RDFSLevel.SIMPLE)\n     r.level \u003d RDFSLevel.SIMPLE\n     r\n   case OWL_HORST \u003d\u003e new ForwardRuleReasonerOWLHorst(spark.sparkContext)\n}\n\n// compute inferred graph\nval inferredGraph \u003d reasoner.apply(graph)\nprintln(s\"|G_inferred|\u003d${inferredGraph.size()}\")\n\n// write triples to disk\nRDFGraphWriter.writeToDisk(inferredGraph, output)",
+      "title": "SPARK \u0027rdfs\u0027 Reasoning example",
+      "text": "import java.io.File\nimport java.net.URI\n\nimport net.sansa_stack.inference.rules.{RDFSLevel, ReasoningProfile}\nimport net.sansa_stack.inference.rules.ReasoningProfile._\nimport net.sansa_stack.inference.spark.data.loader.RDFGraphLoader\nimport net.sansa_stack.inference.spark.data.writer.RDFGraphWriter\nimport net.sansa_stack.inference.spark.forwardchaining.triples.{ForwardRuleReasonerOWLHorst, ForwardRuleReasonerRDFS, TransitiveReasoner}\n\n// load triples from disk\nval input \u003d \"hdfs://namenode:8020/data/rdf.nt\"\nval output \u003d \"hdfs://namenode:8020/data/output/\"\nval argprofile \u003d \"rdfs\"\n\nval profile \u003d argprofile match {\n      case \"rdfs\"        \u003d\u003e ReasoningProfile.RDFS\n      case \"rdfs-simple\" \u003d\u003e ReasoningProfile.RDFS_SIMPLE\n      case \"owl-horst\"   \u003d\u003e ReasoningProfile.OWL_HORST\n      case \"transitive\"  \u003d\u003e ReasoningProfile.TRANSITIVE\n\n}\n\n// the degree of parallelism\nval parallelism \u003d 4\n\n// load triples from disk\nval graph \u003d RDFGraphLoader.loadFromDisk(spark, URI.create(input), parallelism)\nprintln(s\"|G|\u003d${graph.size()}\")\n\n// create reasoner\nval reasoner \u003d profile match {\n   case TRANSITIVE \u003d\u003e new TransitiveReasoner(spark.sparkContext, parallelism)\n   case RDFS       \u003d\u003e new ForwardRuleReasonerRDFS(spark.sparkContext, parallelism)\n   case RDFS_SIMPLE \u003d\u003e\n   var r \u003d new ForwardRuleReasonerRDFS(spark.sparkContext, parallelism) //.level.+(RDFSLevel.SIMPLE)\n     r.level \u003d RDFSLevel.SIMPLE\n     r\n   case OWL_HORST \u003d\u003e new ForwardRuleReasonerOWLHorst(spark.sparkContext)\n}\n\n// compute inferred graph\nval inferredGraph \u003d reasoner.apply(graph)\nprintln(s\"|G_inferred|\u003d${inferredGraph.size()}\")\n\n// write triples to disk\n//RDFGraphWriter.writeToDisk(inferredGraph, output)\n\nval O_graph \u003d \"original graph\" + \"\\t\" + graph.size \nval I_Graph \u003d \"\\n inferred graph\" + \"\\t\" + inferredGraph.size\n\nprintln(\"%table graph\\t size\\n \" + O_graph.union(I_Graph))",
       "user": "anonymous",
-      "dateUpdated": "Feb 9, 2018 10:48:49 AM",
+      "dateUpdated": "Dec 27, 2017 2:11:00 PM",
       "config": {
         "colWidth": 12.0,
         "enabled": true,
-        "results": {},
+        "results": {
+          "1": {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 300.0,
+              "optionOpen": false
+            },
+            "helium": {}
+          }
+        },
         "editorSetting": {
           "language": "scala",
           "editOnDblClick": false
         },
-        "editorMode": "ace/mode/scala"
+        "editorMode": "ace/mode/scala",
+        "title": true
       },
       "settings": {
         "params": {},
@@ -23,7 +34,11 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "\nimport java.io.File\n\nimport java.net.URI\n\nimport net.sansa_stack.inference.rules.{RDFSLevel, ReasoningProfile}\n\nimport net.sansa_stack.inference.rules.ReasoningProfile._\n\nimport net.sansa_stack.inference.spark.data.loader.RDFGraphLoader\n\nimport net.sansa_stack.inference.spark.data.writer.RDFGraphWriter\n\nimport net.sansa_stack.inference.spark.forwardchaining.{ForwardRuleReasonerOWLHorst, ForwardRuleReasonerRDFS, ForwardRuleReasonerRDFSDataset, TransitiveReasoner}\n\nimport org.apache.spark.sql.SparkSession\n\nimport org.apache.hadoop.fs.FileSystem\n\nimport org.apache.hadoop.conf.Configuration\n\ninput: String \u003d hdfs://namenode:8020/data/rdf.nt\n\noutput: String \u003d hdfs://namenode:8020/data/output/\n\nargprofile: String \u003d rdfs\n\nconf: org.apache.hadoop.conf.Configuration \u003d Configuration: core-default.xml, core-site.xml, mapred-default.xml, mapred-site.xml, yarn-default.xml, yarn-site.xml, hdfs-default.xml, hdfs-site.xml\n\nfs: org.apache.hadoop.fs.FileSystem \u003d DFS[DFSClient[clientName\u003dDFSClient_NONMAPREDUCE_-1311082552_182, ugi\u003droot (auth:SIMPLE)]]\n\nresultsPath: org.apache.hadoop.fs.Path \u003d /data/output\n\nres52: Boolean \u003d true\n\nres53: AnyVal \u003d true\n\nprofile: net.sansa_stack.inference.rules.ReasoningProfile.Value \u003d RDFS\n\nparallelism: Int \u003d 4\n\ngraph: net.sansa_stack.inference.spark.data.model.RDFGraph \u003d RDFGraph(MapPartitionsRDD[562] at flatMap at RDFGraphLoader.scala:45)\n|G|\u003d106\n\nreasoner: net.sansa_stack.inference.spark.forwardchaining.TransitiveReasoner \u003d net.sansa_stack.inference.spark.forwardchaining.ForwardRuleReasonerRDFS@78d4cedc\n\ninferredGraph: net.sansa_stack.inference.spark.data.model.RDFGraph \u003d RDFGraph(MapPartitionsRDD[602] at distinct at ForwardRuleReasonerRDFS.scala:209)\n|G_inferred|\u003d195\n"
+            "data": "\nimport java.io.File\n\nimport java.net.URI\n\nimport net.sansa_stack.inference.rules.{RDFSLevel, ReasoningProfile}\n\nimport net.sansa_stack.inference.rules.ReasoningProfile._\n\nimport net.sansa_stack.inference.spark.data.loader.RDFGraphLoader\n\nimport net.sansa_stack.inference.spark.data.writer.RDFGraphWriter\n\nimport net.sansa_stack.inference.spark.forwardchaining.triples.{ForwardRuleReasonerOWLHorst, ForwardRuleReasonerRDFS, TransitiveReasoner}\n\ninput: String \u003d hdfs://namenode:8020/data/rdf.nt\n\noutput: String \u003d hdfs://namenode:8020/data/output/\n\nargprofile: String \u003d rdfs\n\nprofile: net.sansa_stack.inference.rules.ReasoningProfile.Value \u003d RDFS\n\nparallelism: Int \u003d 4\n\ngraph: net.sansa_stack.inference.spark.data.model.RDFGraph \u003d RDFGraph(MapPartitionsRDD[336] at map at RDFGraphLoader.scala:45)\n|G|\u003d106\n\nreasoner: net.sansa_stack.inference.spark.forwardchaining.triples.TransitiveReasoner \u003d net.sansa_stack.inference.spark.forwardchaining.triples.ForwardRuleReasonerRDFS@2835bede\n\ninferredGraph: net.sansa_stack.inference.spark.data.model.RDFGraph \u003d RDFGraph(MapPartitionsRDD[373] at distinct at ForwardRuleReasonerRDFS.scala:217)\n|G_inferred|\u003d148\n\nO_graph: String \u003d original graph\t106\n\n\n\nI_Graph: String \u003d\n\"\n inferred graph\t148\"\n"
+          },
+          {
+            "type": "TABLE",
+            "data": "graph\t size\n original graph\t106\n inferred graph\t148\n"
           }
         ]
       },
@@ -31,8 +46,8 @@
       "jobName": "paragraph_1501502646527_985634075",
       "id": "20170731-120406_1649830490",
       "dateCreated": "Jul 31, 2017 12:04:06 PM",
-      "dateStarted": "Feb 9, 2018 10:48:49 AM",
-      "dateFinished": "Feb 9, 2018 10:48:57 AM",
+      "dateStarted": "Dec 27, 2017 2:11:00 PM",
+      "dateFinished": "Dec 27, 2017 2:11:11 PM",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -65,25 +80,25 @@
   "name": "Inference",
   "id": "2CF1WF6DE",
   "angularObjects": {
-    "2D56R55ZF:shared_process": [],
-    "2D6JPP3BU:shared_process": [],
-    "2D7Q9U3V6:shared_process": [],
-    "2D69CAHQ8:shared_process": [],
-    "2D6UQD6GR:shared_process": [],
-    "2D8HEQZMN:shared_process": [],
-    "2D5N37A7N:shared_process": [],
-    "2D8TFK17N:shared_process": [],
-    "2D8HJV5UG:shared_process": [],
-    "2D5JZFZSZ:shared_process": [],
-    "2D8CFG4CZ:shared_process": [],
-    "2D6A1KUAQ:shared_process": [],
-    "2D56SKEBC:shared_process": [],
-    "2D82K6P8D:shared_process": [],
-    "2D4ZR989Y:shared_process": [],
-    "2D7CEKPRF:shared_process": [],
-    "2D89D8Y2S:shared_process": [],
-    "2D6DHDQKG:shared_process": [],
-    "2D8SBABGE:shared_process": []
+    "2D4ERZXXW:shared_process": [],
+    "2D4EPAJD4:shared_process": [],
+    "2D3BKJA7V:shared_process": [],
+    "2D22Q8VER:shared_process": [],
+    "2D4BARTEP:shared_process": [],
+    "2D4VXHXBJ:shared_process": [],
+    "2D1HR4PUY:shared_process": [],
+    "2D28CYVNT:shared_process": [],
+    "2D3KBK32J:shared_process": [],
+    "2D376ADYX:shared_process": [],
+    "2D4ZA8GES:shared_process": [],
+    "2D5974FPG:shared_process": [],
+    "2D1RKBFHH:shared_process": [],
+    "2D4J5PAAQ:shared_process": [],
+    "2D55HQ7RC:shared_process": [],
+    "2D3H8E9AU:shared_process": [],
+    "2D271H4X8:shared_process": [],
+    "2D37JTAJZ:shared_process": [],
+    "2D4M2X1ES:shared_process": []
   },
   "config": {},
   "info": {}
