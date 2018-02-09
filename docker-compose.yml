@@ -125,7 +125,7 @@ services:
        labels:
          traefik.docker.network: "sansa"
          traefik.port: "8080"
-         traefik.frontend.rule: "Host:notebooks.sansa.aksw.org"
+         traefik.frontend.rule: "Host:notebooks.sansa.aksw.org,notebooks.sansa-stack.net"
          traefik.backend: "zeppelin-notebooks"
          traefik.default.protocol: "http"
          traefik.enable: "true"
