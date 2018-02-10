@@ -1,3 +1,4 @@
 /data/
 output/
 examples/jars/sansa-examples-spark.jar
+conf/zeppelin/shiro.ini
