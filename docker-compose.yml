@@ -108,6 +108,12 @@ services:
       - type: bind
         source: ./examples
         target: /opt/sansa-examples
+      - type: bind
+        source: ./conf/zeppelin/zeppelin-site.xml
+        target: /opt/zeppelin/conf/zeppelin-site.xml
+      - type: bind
+        source: ./conf/zeppelin/shiro.ini
+        target: /opt/zeppelin/conf/shiro.ini
     environment:
       CORE_CONF_fs_defaultFS: "hdfs://namenode:8020"
       SPARK_MASTER: "spark://spark-master:7077"
