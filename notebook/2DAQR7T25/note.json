@@ -1,0 +1,88 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark.pyspark\n\nfrom __future__ import print_function\n\nimport sys\nfrom random import random\nfrom operator import add\n\nfrom pyspark.sql import SparkSession\n\nspark \u003d SparkSession\\\n    .builder\\\n    .appName(\"PythonPi\")\\\n    .getOrCreate()\n\npartitions \u003d int(sys.argv[1]) if len(sys.argv) \u003e 1 else 2\nn \u003d partitions\n\ndef f(_):\n    x \u003d random() * 2 - 1\n    y \u003d random() * 2 - 1\n    return 1 if x ** 2 + y ** 2 \u003c\u003d 1 else 0\n\ncount \u003d spark.sparkContext.parallelize(range(1, n + 1), partitions).map(f).reduce(add)\nprint(\"Pi is roughly %f\" % (4.0 * count / n))\n\nspark.stop()",
+      "user": "anonymous",
+      "dateUpdated": "Mar 8, 2018 8:37:15 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/text"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Pi is roughly 3.142901\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1520278817251_298916962",
+      "id": "20180305-194017_1380443474",
+      "dateCreated": "Mar 5, 2018 7:40:17 PM",
+      "dateStarted": "Mar 8, 2018 8:37:15 PM",
+      "dateFinished": "Mar 8, 2018 8:49:07 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "dateUpdated": "Mar 5, 2018 7:42:03 PM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1520278820887_1768657761",
+      "id": "20180305-194020_1520475662",
+      "dateCreated": "Mar 5, 2018 7:40:20 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "pipy",
+  "id": "2DAQR7T25",
+  "angularObjects": {
+    "2DAUJUC2V:shared_process": [],
+    "2D7KDAWZB:shared_process": [],
+    "2D8D5UJ5D:shared_process": [],
+    "2D9TB949N:shared_process": [],
+    "2D8RX3GW5:shared_process": [],
+    "2D7MBTWR6:shared_process": [],
+    "2D8F47MR1:shared_process": [],
+    "2D87G3YWB:shared_process": [],
+    "2D92U8YTQ:shared_process": [],
+    "2D8J7EDZZ:shared_process": [],
+    "2D975DVCW:shared_process": [],
+    "2DABRPXDE:shared_process": [],
+    "2D83N6QAE:shared_process": [],
+    "2D7PRVZU4:shared_process": [],
+    "2D7SHFEVN:shared_process": [],
+    "2D8YPPMGD:shared_process": [],
+    "2D7MQZUW8:shared_process": [],
+    "2D9K72SGA:shared_process": [],
+    "2D7FY7J1A:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

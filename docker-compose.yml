@@ -16,7 +16,7 @@ services:
       - HDFS_CONF_dfs_permissions_enabled=false
     healthcheck:
       interval: 5s
-      retries: 100 
+      retries: 100
     networks:
       - spark-net
   datanode:
@@ -31,11 +31,11 @@ services:
         condition: service_healthy
     healthcheck:
       interval: 5s
-      retries: 100 
+      retries: 100
     networks:
       - spark-net
   spark-master:
-    image: bde2020/spark-master:2.1.0-hadoop2.8-hive-java8
+    image: earthquakesan/spark:master-2.1.0-hadoop2.8-hive-java8
     container_name: spark-master
     ports:
       - "8080:8080"
@@ -49,11 +49,11 @@ services:
         condition: service_healthy
     healthcheck:
       interval: 5s
-      retries: 100 
+      retries: 100
     networks:
       - spark-net
   spark-worker:
-    image: bde2020/spark-worker:2.1.0-hadoop2.8-hive-java8
+    image: earthquakesan/spark:worker-2.1.0-hadoop2.8-hive-java8
     environment:
       - "SPARK_MASTER=spark://spark-master:7077"
     environment:
@@ -63,7 +63,7 @@ services:
         condition: service_healthy
     healthcheck:
       interval: 5s
-      retries: 100 
+      retries: 100
     networks:
       - spark-net
   hue:
