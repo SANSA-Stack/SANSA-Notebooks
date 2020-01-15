@@ -28,6 +28,7 @@ When start-up is done you will be able to access the following interfaces:
 * http://localhost:8080/ (Spark Master)
 * http://localhost:8088/home (Hue HDFS Filebrowser)
 * http://localhost/ (Zeppelin)
+
 To load the data to your cluster simply do:
 ```
 make load-data
@@ -40,7 +41,10 @@ To restart Zeppelin without restarting the whole stack:
 ```
 make restart
 ```
-
+Stop the whole stack:
+```
+make down
+```
 # Executing Examples From Command Line
 It is also possible to execute the applications from the command line. Get SANSA-Examples jar and start the cluster if you already have not done it:
 ```
@@ -65,6 +69,5 @@ make cli-clustering
 make cli-rule-mining
 ```
 
-# Notes
-* The instructions from this repo were tested on Ubuntu 16.04 with Docker engine 17.03.
-* Maintained by [Ivan Ermilov](https://github.com/earthquakesan/)
+## How to Contribute
+We always welcome new contributors to the project! Please see [our contribution guide](http://sansa-stack.net/contributing-to-sansa/) for more details on how to get started contributing to SANSA.

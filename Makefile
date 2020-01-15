@@ -1,6 +1,6 @@
 default:
 	mkdir -p examples/jars
-	wget -O examples/jars/sansa-examples-spark.jar https://github.com/SANSA-Stack/SANSA-Examples/releases/download/v2018-12/sansa-examples-spark_2.11-2018-12.jar
+	wget -O examples/jars/sansa-examples-spark.jar https://github.com/SANSA-Stack/SANSA-Examples/releases/download/v0.7.1/sansa-examples-spark_2.11-0.7.1.jar
 
 load-data:
 	docker run -it --rm -v $(shell pwd)/examples/data:/data --net spark-net -e "CORE_CONF_fs_defaultFS=hdfs://namenode:8020" bde2020/hadoop-namenode:1.1.0-hadoop2.8-java8 hdfs dfs -copyFromLocal /data /data
@@ -57,6 +57,10 @@ cli-owl-reader-manchester:
 cli-owl-reader-functional:
 	docker-compose -f docker-compose-app.yml build owl-reader-functional
 	docker-compose -f docker-compose-app.yml up owl-reader-functional
+
+cli-owl-reader-rdf-xml:
+	docker-compose -f docker-compose-app.yml build owl-reader-rdf-xml
+	docker-compose -f docker-compose-app.yml up owl-reader-rdf-xml
 
 cli-owl-dataset-reader-manchester:
 	docker-compose -f docker-compose-app.yml build owl-dataset-reader-manchester
